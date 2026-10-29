@@ -1,0 +1,240 @@
+🚶 PIR Motion Sensor Based Automatic Light Control System
+
+📌 Project Overview
+
+The PIR Motion Sensor Based Automatic Light Control System using Arduino UNO is an electronics project that automatically switches a light ON when human movement is detected and switches it OFF after a specified period without detected motion.
+
+The project uses a PIR (Passive Infrared) sensor to detect movement, an Arduino UNO to process the sensor signal, and a relay module to control the light.
+
+This system can be used in rooms, corridors, staircases, and other areas where automatic lighting is useful.
+
+🎯 Objectives
+
+- To detect human movement using a PIR sensor.
+- To control a light automatically using an Arduino UNO.
+- To operate a relay module using a digital output.
+- To switch OFF the light automatically after a predefined delay.
+- To demonstrate the application of sensors and microcontrollers in home automation.
+
+🛠️ Hardware Requirements
+
+No.| Component| Quantity| Purpose
+1| Arduino UNO| 1| Main controller
+2| PIR Motion Sensor (HC-SR501)| 1| Detects movement
+3| 5V Relay Module| 1| Controls the light circuit
+4| Compatible low-voltage DC bulb| 1| Light output
+5| Breadboard| 1| Circuit prototyping
+6| Jumper Wires| As required| Electrical connections
+7| USB Cable| 1| Programming and powering the Arduino
+
+💻 Software Requirements
+
+- Arduino IDE
+- Arduino UNO board support
+- USB cable for programming
+
+No additional Arduino libraries are required for the basic program.
+
+🔌 Circuit Connections
+
+PIR Sensor to Arduino UNO
+
+PIR Sensor Pin| Arduino UNO Pin
+VCC| 5V
+OUT| Digital Pin 2
+GND| GND
+
+Relay Module to Arduino UNO
+
+Relay Module Pin| Arduino UNO Pin
+VCC| 5V
+GND| GND
+IN| Digital Pin 8
+
+Bulb Connections
+
+Connect the compatible low-voltage bulb circuit through the relay's COM and NO contacts.
+
+- COM: Common terminal.
+- NO: Normally Open terminal.
+
+When the relay activates, COM connects to NO, completing the bulb circuit.
+
+Safety Note: Use a suitable low-voltage DC bulb for initial testing. Household AC wiring can cause electric shock or fire. Any mains-powered installation must be enclosed and handled by a qualified electrician.
+
+⚙️ Working Principle
+
+The system operates according to the following sequence:
+
+1. The PIR sensor monitors its detection area.
+2. When movement is detected, the sensor sends a HIGH signal to Arduino digital pin 2.
+3. The Arduino reads the sensor output.
+4. The Arduino activates the relay through digital pin 8.
+5. The relay switches ON the connected light.
+6. The Arduino records the most recent motion signal.
+7. When the PIR output remains LOW for the programmed interval, the Arduino deactivates the relay.
+8. The light switches OFF automatically.
+
+The program uses a 10-second timer, which can be adjusted according to project requirements.
+
+🧠 Arduino Program
+
+// PIR Motion Sensor Based Automatic Light Control
+// Arduino UNO + PIR Sensor + Relay Module
+
+const int PIR_PIN = 2;
+const int RELAY_PIN = 8;
+
+// Assumes an active-LOW relay module
+const int RELAY_ON = LOW;
+const int RELAY_OFF = HIGH;
+
+unsigned long lastMotionTime = 0;
+const unsigned long lightDelay = 10000;
+
+bool lightIsOn = false;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(PIR_PIN, INPUT);
+  pinMode(RELAY_PIN, OUTPUT);
+
+  digitalWrite(RELAY_PIN, RELAY_OFF);
+
+  Serial.println("PIR Automatic Light System Started");
+}
+
+void loop() {
+  int pirState = digitalRead(PIR_PIN);
+
+  if (pirState == HIGH) {
+    lastMotionTime = millis();
+
+    if (!lightIsOn) {
+      Serial.println("Motion detected: Light ON");
+      lightIsOn = true;
+    }
+
+    digitalWrite(RELAY_PIN, RELAY_ON);
+  }
+
+  if (lightIsOn &&
+      millis() - lastMotionTime >= lightDelay) {
+
+    digitalWrite(RELAY_PIN, RELAY_OFF);
+    lightIsOn = false;
+
+    Serial.println("No motion: Light OFF");
+  }
+
+  delay(100);
+}
+
+Important: This code assumes the relay module is active-LOW. For an active-HIGH relay, change the relay settings to:
+
+const int RELAY_ON = HIGH;
+const int RELAY_OFF = LOW;
+
+The PIR sensor's output timing and retrigger settings can affect the actual light-off time.
+
+🚀 How to Run the Project
+
+1. Install Arduino IDE on your computer.
+2. Connect the Arduino UNO using a USB cable.
+3. Open Arduino IDE.
+4. Select Tools → Board → Arduino AVR Boards → Arduino UNO.
+5. Select the correct port under Tools → Port.
+6. Create a new sketch.
+7. Copy the Arduino program into the sketch.
+8. Click Verify to compile the program.
+9. Click Upload to upload the program to the Arduino.
+10. Connect the PIR sensor and relay module according to the connection tables.
+11. Power the system and allow the PIR sensor to stabilize.
+12. Move in front of the sensor to test the automatic light control.
+13. Open Tools → Serial Monitor and set the baud rate to 9600 to observe the system messages.
+
+📟 Expected Output
+
+When the Arduino starts, the Serial Monitor displays:
+
+PIR Automatic Light System Started
+
+When motion is detected:
+
+Motion detected: Light ON
+
+When the programmed OFF condition is satisfied:
+
+No motion: Light OFF
+
+The relay and bulb should respond accordingly.
+
+📊 Block Diagram
+
+       Human Movement
+              |
+              v
+        +-------------+
+        | PIR Sensor  |
+        +-------------+
+              |
+              v
+        +-------------+
+        | Arduino UNO |
+        +-------------+
+              |
+              v
+        +-------------+
+        | Relay Module|
+        +-------------+
+              |
+              v
+        +-------------+
+        | Light Bulb  |
+        +-------------+
+
+🌍 Applications
+
+- Automatic room lighting
+- Staircase lighting
+- Corridor lighting
+- Motion-activated security lighting
+- Energy-saving lighting systems
+- Automatic lighting in storage areas
+
+🔮 Future Improvements
+
+The project can be enhanced by adding:
+
+- An LDR sensor to activate lighting only when the surroundings are dark.
+- An LCD or OLED display to show motion status.
+- A buzzer to provide an audible alert.
+- A Wi-Fi-enabled controller for remote monitoring.
+- Adjustable light-off timing.
+
+⚠️ Limitations
+
+- PIR sensors detect changes in infrared radiation and may not detect stationary people reliably.
+- Detection range depends on the sensor model and installation.
+- Environmental conditions and sensor settings can affect detection.
+- The relay's active-HIGH or active-LOW behavior must match the program.
+- The basic system does not distinguish between people and other moving warm objects.
+
+📚 Conclusion
+
+The PIR Motion Sensor Based Automatic Light Control System demonstrates how a sensor, microcontroller, and relay can work together to automate lighting.
+
+The PIR sensor detects movement, the Arduino UNO processes the signal, and the relay controls the light circuit. This project provides practical experience with embedded systems, digital inputs and outputs, and basic automation.
+
+👨‍💻 Technologies Used
+
+- Microcontroller: Arduino UNO
+- Sensor: PIR Motion Sensor
+- Switching Device: Relay Module
+- Programming Language: Arduino C/C++
+- Development Environment: Arduino IDE
+
+📄 License
+
+This project is intended for educational and demonstration purposes. You may modify the source code for learning and non-commercial project development.
